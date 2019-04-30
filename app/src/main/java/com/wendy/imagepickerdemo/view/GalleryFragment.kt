@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.Spinner

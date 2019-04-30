@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             activityBinding?.flFragment.let { item ->
                 item?.id?.let { fragmentLayoutId ->
                     supportFragmentManager.beginTransaction()
-                        .add(fragmentLayoutId, GalleryFragment.getInstance(1 ))
+                        .add(fragmentLayoutId, GalleryFragment.getInstance(3 ))
                         .addToBackStack(null)
                         .commit()
                 }
