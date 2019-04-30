@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <com.wendy.imagepickerdemo.component.SquareRelativeLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:padding="1dip"
+            android:layout_gravity="center"
+            android:id="@+id/iv_photo"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            tools:background="@drawable/image_placeholder"
+            android:layout_height="match_parent"/>
+
+        <CheckBox
+            android:id="@+id/cb_image_item"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </com.wendy.imagepickerdemo.component.SquareRelativeLayout>
+</layout>
