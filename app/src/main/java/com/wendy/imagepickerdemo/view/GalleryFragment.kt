@@ -16,6 +16,7 @@ import com.wendy.imagepickerdemo.model.ImageGalleryUiModel
 import com.wendy.imagepickerdemo.service.MediaHelper
 import com.wendy.imagepickerdemo.view.adapter.ImageGalleryAdapter
 import com.wendy.imagepickerdemo.view.adapter.ImageGalleryToolBarAdapter
+import kotlinx.coroutines.*
 
 class GalleryFragment : Fragment() {
 
@@ -26,6 +27,7 @@ class GalleryFragment : Fragment() {
     private val chosenImageList: MutableList<String> = mutableListOf()
     private var imageGalleryUiModelList: HashMap<String, ArrayList<ImageGalleryUiModel>> = hashMapOf()
     private var maxCount: Int? = null
+    private var currentCategoryIndex = 0
 
     companion object {
         private const val MAX_COUNT: String = "GALLERY_FRAGMENT_MAX_COUNT"
@@ -45,27 +47,6 @@ class GalleryFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         galleryFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_gallery, container, false)
-        activity?.let {
-            imageGalleryUiModelList = MediaHelper.getImageGallery(it)
-            imageGalleryUiModelList.keys.forEach { key ->
-                categoryList.add(key)
-            }
-        }
-        galleryFragmentBinding.rvGridImage.apply {
-            val gridLayoutManager = GridLayoutManager(
-                context,
-                3
-            )
-            layoutManager = gridLayoutManager
-            if (imageGalleryAdapter == null) {
-                imageGalleryAdapter =
-                    ImageGalleryAdapter(imageGalleryUiModelList[categoryList[0]] as MutableList<ImageGalleryUiModel>) { imageUri, createAction ->
-                        updateChosenImageList(imageUri, createAction)
-                    }
-            }
-            adapter = imageGalleryAdapter
-        }
-
         actionBar = (activity as AppCompatActivity).supportActionBar
         setHasOptionsMenu(true)
         updateTitleBar()
@@ -90,9 +71,17 @@ class GalleryFragment : Fragment() {
                 }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    imageGalleryAdapter?.changeItemsData(imageGalleryUiModelList[categoryList[position]] as MutableList<ImageGalleryUiModel>)
+                    currentCategoryIndex = position
+                    changeImageListInImageGalleryAdapter()
                 }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        runBlocking {
+            getImageGalleryList()
         }
     }
 
@@ -114,7 +103,50 @@ class GalleryFragment : Fragment() {
         return true
     }
 
-    private fun updateTitleBar(){
+    private fun updateTitleBar() {
         actionBar?.title = "${chosenImageList.size}/$maxCount Selected"
+    }
+
+    private suspend fun getImageGalleryList() {
+        activity?.let {
+            val getImageGalleryList = GlobalScope.async(Dispatchers.Default) { MediaHelper.getImageGallery(it) }
+
+            if (!categoryList.isNullOrEmpty() || !imageGalleryUiModelList.isNullOrEmpty()) {
+                categoryList.clear()
+                imageGalleryUiModelList.clear()
+            }
+
+            imageGalleryUiModelList = getImageGalleryList.await()
+            imageGalleryUiModelList.keys.forEach { key ->
+                categoryList.add(key)
+            }
+
+            setUpImageGalleryAdapter()
+        }
+    }
+
+    private fun changeImageListInImageGalleryAdapter() {
+        imageGalleryAdapter?.changeItemsData(imageGalleryUiModelList[categoryList[currentCategoryIndex]] as MutableList<ImageGalleryUiModel>)
+    }
+
+    private fun setUpImageGalleryAdapter() {
+        imageGalleryAdapter?.let {
+            changeImageListInImageGalleryAdapter()
+        } ?: run {
+            galleryFragmentBinding.rvGridImage.apply {
+                val gridLayoutManager = GridLayoutManager(
+                    context,
+                    3
+                )
+                layoutManager = gridLayoutManager
+                if (imageGalleryAdapter == null) {
+                    imageGalleryAdapter =
+                        ImageGalleryAdapter(imageGalleryUiModelList[categoryList[currentCategoryIndex]] as MutableList<ImageGalleryUiModel>) { imageUri, createAction ->
+                            updateChosenImageList(imageUri, createAction)
+                        }
+                }
+                adapter = imageGalleryAdapter
+            }
+        }
     }
 }
