@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.view
+package com.wendy.imagepickerdemo.main.view
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -10,12 +10,13 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.Spinner
 import android.widget.Toast
+import com.wendy.imagepickerdemo.main.MainActivity
 import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.FragmentGalleryBinding
-import com.wendy.imagepickerdemo.model.ImageGalleryUiModel
-import com.wendy.imagepickerdemo.service.MediaHelper
-import com.wendy.imagepickerdemo.view.adapter.ImageGalleryAdapter
-import com.wendy.imagepickerdemo.view.adapter.ImageGalleryToolBarAdapter
+import com.wendy.imagepickerdemo.main.model.ImageGalleryUiModel
+import com.wendy.imagepickerdemo.main.service.MediaHelper
+import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryAdapter
+import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryToolBarAdapter
 import kotlinx.coroutines.*
 
 class GalleryFragment : Fragment() {
@@ -42,14 +43,19 @@ class GalleryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        maxCount = arguments?.getInt(GalleryFragment.MAX_COUNT, 0)
+        maxCount = arguments?.getInt(MAX_COUNT, 0)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         galleryFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_gallery, container, false)
+
+        galleryFragmentBinding.btSubmit.setOnClickListener{
+            val currentParentActivity = activity as MainActivity
+            currentParentActivity.getImageGalleryResultFromGalleryFragment(chosenImageList)
+        }
+
         actionBar = (activity as AppCompatActivity).supportActionBar
         setHasOptionsMenu(true)
-        updateTitleBar()
         return galleryFragmentBinding.root
     }
 
@@ -62,7 +68,11 @@ class GalleryFragment : Fragment() {
 
         activity?.let {
             val spinnerAdapter =
-                ImageGalleryToolBarAdapter(it, android.R.layout.simple_spinner_dropdown_item, categoryList)
+                ImageGalleryToolBarAdapter(
+                    it,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    categoryList
+                )
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = spinnerAdapter
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -80,6 +90,8 @@ class GalleryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        chosenImageList.clear()
+        updateTitleBar()
         runBlocking {
             getImageGalleryList()
         }

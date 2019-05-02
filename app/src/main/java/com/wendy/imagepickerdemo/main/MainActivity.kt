@@ -1,6 +1,7 @@
-package com.wendy.imagepickerdemo
+package com.wendy.imagepickerdemo.main
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
@@ -8,10 +9,18 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.widget.Toast
+import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.ActivityMainBinding
-import com.wendy.imagepickerdemo.view.GalleryFragment
+import com.wendy.imagepickerdemo.main.view.GalleryFragment
+import com.wendy.imagepickerdemo.result.ResultActivity
+import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TAG_NAME = "ImagePickerDemo"
+    }
 
     private var activityBinding: ActivityMainBinding? = null
 
@@ -30,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             activityBinding?.flFragment.let { item ->
                 item?.id?.let { fragmentLayoutId ->
                     supportFragmentManager.beginTransaction()
-                        .add(fragmentLayoutId, GalleryFragment.getInstance(3 ))
+                        .add(fragmentLayoutId, GalleryFragment.getInstance(3))
                         .addToBackStack(null)
                         .commit()
                 }
@@ -42,7 +51,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+        toggleShowGalleryButtonVisibility()
+    }
 
+    fun getImageGalleryResultFromGalleryFragment(chosenImageList: MutableList<String>) {
+        supportFragmentManager.popBackStackImmediate()
+        supportActionBar?.title = TAG_NAME
+        toggleShowGalleryButtonVisibility()
+        val intent = Intent(this, ResultActivity::class.java)
+        intent.putStringArrayListExtra(
+            ResultActivity.GET_IMAGE_GALLERY_RESULT,
+            chosenImageList.toList() as ArrayList<String>
+        )
+        startActivity(intent)
+    }
+
+    private fun toggleShowGalleryButtonVisibility() {
         activityBinding?.btShowGallery?.let {
             if (it.visibility == View.GONE) {
                 it.visibility = View.VISIBLE

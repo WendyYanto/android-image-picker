@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.view.adapter
+package com.wendy.imagepickerdemo.main.view.adapter
 
 import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
@@ -9,7 +9,7 @@ import android.widget.CheckBox
 import com.bumptech.glide.Glide
 import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.ImagePickerItemsBinding
-import com.wendy.imagepickerdemo.model.ImageGalleryUiModel
+import com.wendy.imagepickerdemo.main.model.ImageGalleryUiModel
 
 class ImageGalleryAdapter(
     private var items: MutableList<ImageGalleryUiModel>,
@@ -19,7 +19,10 @@ class ImageGalleryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val imageGalleryItem = LayoutInflater.from(parent.context).inflate(R.layout.image_picker_items, parent, false)
-        return ImageGalleryViewHolder(imageGalleryItem, listener)
+        return ImageGalleryViewHolder(
+            imageGalleryItem,
+            listener
+        )
     }
 
     override fun getItemCount(): Int {
@@ -37,7 +40,7 @@ class ImageGalleryAdapter(
         notifyDataSetChanged()
     }
 
-    class ImageGalleryViewHolder(
+    inner class ImageGalleryViewHolder(
         itemView: View,
         private val listener: (imageUri: String, createAction: Boolean) -> Boolean
     ) :

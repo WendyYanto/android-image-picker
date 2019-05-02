@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.component
+package com.wendy.imagepickerdemo.main.component
 
 import android.content.Context
 import android.util.AttributeSet

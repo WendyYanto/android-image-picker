@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.view.adapter
+package com.wendy.imagepickerdemo.main.view.adapter
 
 import android.content.Context
 import android.widget.ArrayAdapter
