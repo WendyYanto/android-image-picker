@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
-import android.widget.Toast
 import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.ActivityMainBinding
 import com.wendy.imagepickerdemo.main.view.GalleryFragment
@@ -58,12 +57,21 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.popBackStackImmediate()
         supportActionBar?.title = TAG_NAME
         toggleShowGalleryButtonVisibility()
-        val intent = Intent(this, ResultActivity::class.java)
-        intent.putStringArrayListExtra(
-            ResultActivity.GET_IMAGE_GALLERY_RESULT,
-            chosenImageList.toList() as ArrayList<String>
-        )
-        startActivity(intent)
+
+        if (chosenImageList.isNotEmpty()) {
+            val intent = Intent(this, ResultActivity::class.java)
+            if (chosenImageList.size == 1) {
+
+            } else {
+                intent.putStringArrayListExtra(
+                    ResultActivity.GET_IMAGE_GALLERY_RESULT,
+                    chosenImageList.toList() as ArrayList<String>
+                )
+            }
+
+            startActivity(intent)
+        }
+
     }
 
     private fun toggleShowGalleryButtonVisibility() {

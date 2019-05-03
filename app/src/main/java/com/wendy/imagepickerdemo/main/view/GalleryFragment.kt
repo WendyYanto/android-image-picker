@@ -18,6 +18,7 @@ import com.wendy.imagepickerdemo.main.service.MediaHelper
 import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryAdapter
 import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryToolBarAdapter
 import kotlinx.coroutines.*
+import kotlinx.coroutines.android.Main
 
 class GalleryFragment : Fragment() {
 
@@ -49,7 +50,7 @@ class GalleryFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         galleryFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_gallery, container, false)
 
-        galleryFragmentBinding.btSubmit.setOnClickListener{
+        galleryFragmentBinding.btSubmit.setOnClickListener {
             val currentParentActivity = activity as MainActivity
             currentParentActivity.getImageGalleryResultFromGalleryFragment(chosenImageList)
         }
@@ -92,9 +93,7 @@ class GalleryFragment : Fragment() {
         super.onResume()
         chosenImageList.clear()
         updateTitleBar()
-        runBlocking {
-            getImageGalleryList()
-        }
+        getImageGalleryList()
     }
 
     private fun updateChosenImageList(imageUri: String, createAction: Boolean): Boolean {
@@ -119,21 +118,19 @@ class GalleryFragment : Fragment() {
         actionBar?.title = "${chosenImageList.size}/$maxCount Selected"
     }
 
-    private suspend fun getImageGalleryList() {
+    private fun getImageGalleryList() {
         activity?.let {
-            val getImageGalleryList = GlobalScope.async(Dispatchers.Default) { MediaHelper.getImageGallery(it) }
-
-            if (!categoryList.isNullOrEmpty() || !imageGalleryUiModelList.isNullOrEmpty()) {
+            CoroutineScope(Dispatchers.Main).launch {
                 categoryList.clear()
                 imageGalleryUiModelList.clear()
-            }
 
-            imageGalleryUiModelList = getImageGalleryList.await()
-            imageGalleryUiModelList.keys.forEach { key ->
-                categoryList.add(key)
-            }
+                imageGalleryUiModelList = MediaHelper.getImageGallery(it)
+                imageGalleryUiModelList.keys.forEach { key ->
+                    categoryList.add(key)
+                }
 
-            setUpImageGalleryAdapter()
+                setUpImageGalleryAdapter()
+            }
         }
     }
 
