@@ -38,7 +38,6 @@ class ImageGalleryAdapter(
 
     fun changeItemsData(newItems: MutableList<ImageGalleryUiModel>) {
         items = newItems
-        Log.v("ReceivedWKWKWKWK", newItems.toString())
         notifyDataSetChanged()
     }
 

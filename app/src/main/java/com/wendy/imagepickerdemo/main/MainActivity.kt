@@ -60,15 +60,10 @@ class MainActivity : AppCompatActivity() {
 
         if (chosenImageList.isNotEmpty()) {
             val intent = Intent(this, ResultActivity::class.java)
-            if (chosenImageList.size == 1) {
-
-            } else {
-                intent.putStringArrayListExtra(
-                    ResultActivity.GET_IMAGE_GALLERY_RESULT,
-                    chosenImageList.toList() as ArrayList<String>
-                )
-            }
-
+            intent.putStringArrayListExtra(
+                ResultActivity.GET_IMAGE_GALLERY_RESULT,
+                chosenImageList as ArrayList<String>
+            )
             startActivity(intent)
         }
 
