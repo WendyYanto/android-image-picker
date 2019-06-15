@@ -5,7 +5,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import com.wendy.imagepickerdemo.main.model.ImageGalleryUiModel
-import kotlinx.coroutines.*
 
 class MediaHelper {
 
@@ -13,8 +12,8 @@ class MediaHelper {
 
         private val ALLOWED_IMAGE_TYPE = arrayOf("png", "jpg", "jpeg")
 
-        fun getImageGallery(context: Context): HashMap<String, ArrayList<ImageGalleryUiModel>> {
-            val fetchImageGalleryList: HashMap<String, ArrayList<ImageGalleryUiModel>> = hashMapOf()
+        fun getImageGallery(context: Context): MutableMap<String, ArrayList<ImageGalleryUiModel>> {
+            val fetchImageGalleryList: MutableMap<String, ArrayList<ImageGalleryUiModel>> = mutableMapOf()
             val projection = arrayOf(
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
                 MediaStore.Images.Media.DATA

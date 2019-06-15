@@ -31,7 +31,7 @@ class GalleryFragment : Fragment() {
     private var actionBar: ActionBar? = null
     private var categoryList: MutableList<String> = mutableListOf()
     private val chosenImageList: MutableList<String> = mutableListOf()
-    private var imageGalleryUiModelList: HashMap<String, ArrayList<ImageGalleryUiModel>> = hashMapOf()
+    private var imageGalleryUiModelList: MutableMap<String, ArrayList<ImageGalleryUiModel>> = mutableMapOf()
     private var maxCount: Int? = null
     private var currentCategoryIndex = 0
 
