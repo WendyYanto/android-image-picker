@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.Spinner
@@ -18,8 +17,12 @@ import com.wendy.imagepickerdemo.main.model.ImageGalleryUiModel
 import com.wendy.imagepickerdemo.main.service.MediaHelper
 import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryAdapter
 import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryToolBarAdapter
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.android.Main
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.IO
 
 class GalleryFragment : Fragment() {
 
@@ -125,12 +128,17 @@ class GalleryFragment : Fragment() {
                 categoryList.clear()
                 imageGalleryUiModelList.clear()
 
-                imageGalleryUiModelList = MediaHelper.getImageGallery(it)
-                imageGalleryUiModelList.keys.forEach { key ->
-                    categoryList.add(key)
+                imageGalleryUiModelList = withContext(Dispatchers.IO) {
+                    MediaHelper.getImageGallery(it)
                 }
-                it.invalidateOptionsMenu()
-                setUpImageGalleryAdapter()
+
+                if (imageGalleryUiModelList.isNotEmpty()) {
+                    imageGalleryUiModelList.keys.forEach { key ->
+                        categoryList.add(key)
+                    }
+                    it.invalidateOptionsMenu()
+                    setUpImageGalleryAdapter()
+                }
             }
         }
     }

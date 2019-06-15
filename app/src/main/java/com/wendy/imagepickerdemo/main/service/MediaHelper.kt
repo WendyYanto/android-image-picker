@@ -12,43 +12,38 @@ class MediaHelper {
     companion object {
 
         private val ALLOWED_IMAGE_TYPE = arrayOf("png", "jpg", "jpeg")
-        private var finalGalleryImageList: HashMap<String, ArrayList<ImageGalleryUiModel>> = hashMapOf()
 
-        suspend fun getImageGallery(context: Context): HashMap<String, ArrayList<ImageGalleryUiModel>> {
-            withContext(Dispatchers.Default) {
-                val imageGalleryList = async {
-                    val fetchImageGalleryList: HashMap<String, ArrayList<ImageGalleryUiModel>> = hashMapOf()
-                    val projection = arrayOf(
-                        MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-                        MediaStore.Images.Media.DATA
-                    )
+        fun getImageGallery(context: Context): HashMap<String, ArrayList<ImageGalleryUiModel>> {
+            val fetchImageGalleryList: HashMap<String, ArrayList<ImageGalleryUiModel>> = hashMapOf()
+            val projection = arrayOf(
+                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.Media.DATA
+            )
 
-                    val images: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    val cursor: Cursor? = context.contentResolver.query(images, projection, null, null, null)
+            val images: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            val cursor: Cursor? = context.contentResolver.query(images, projection, null, null, null)
 
-                    if (cursor?.moveToFirst() == true) {
-                        var bucket: String
-                        var uri: String
-                        val bucketColumn: Int = cursor.getColumnIndex(projection[0])
-                        val imageUriColumn: Int = cursor.getColumnIndex(projection[1])
+            if (cursor?.moveToFirst() == true) {
+                var bucket: String
+                var uri: String
+                val bucketColumn: Int = cursor.getColumnIndex(projection[0])
+                val imageUriColumn: Int = cursor.getColumnIndex(projection[1])
 
-                        do {
-                            bucket = cursor.getString(bucketColumn)
-                            uri = cursor.getString(imageUriColumn)
-                            if (fetchImageGalleryList[bucket] == null) {
-                                fetchImageGalleryList[bucket] = ArrayList()
-                            }
-                            if (uri.substring(uri.length - 3, uri.length) in ALLOWED_IMAGE_TYPE) {
-                                fetchImageGalleryList[bucket]?.add(ImageGalleryUiModel(imageUri = uri))
-                            }
-                        } while (cursor.moveToNext())
+                do {
+                    bucket = cursor.getString(bucketColumn)
+                    uri = cursor.getString(imageUriColumn)
+                    if (fetchImageGalleryList[bucket] == null) {
+                        fetchImageGalleryList[bucket] = ArrayList()
                     }
-                    cursor?.close()
-                    return@async fetchImageGalleryList
-                }
-                finalGalleryImageList = imageGalleryList.await()
+                    if (uri.substring(uri.length - 3, uri.length) in ALLOWED_IMAGE_TYPE || uri.substring( uri.length - 4, uri.length) in ALLOWED_IMAGE_TYPE
+                    ) {
+                        fetchImageGalleryList[bucket]?.add(ImageGalleryUiModel(imageUri = uri))
+                    }
+                } while (cursor.moveToNext())
             }
-            return finalGalleryImageList
+            cursor?.close()
+
+            return fetchImageGalleryList
         }
 
     }

@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG_NAME = "ImagePickerDemo"
+        private const val READ_EXTERNAL_PERMISSION_REQUEST_CODE = 1
     }
 
     private var activityBinding: ActivityMainBinding? = null
@@ -26,25 +27,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 999)
-        }
 
         activityBinding?.btShowGallery?.setOnClickListener {
-            activityBinding?.flFragment.let { item ->
-                item?.id?.let { fragmentLayoutId ->
-                    supportFragmentManager.beginTransaction()
-                        .add(fragmentLayoutId, GalleryFragment.getInstance(3))
-                        .addToBackStack(null)
-                        .commit()
+            if (checkExternalStoragePermission()) {
+                activityBinding?.flFragment.let { item ->
+                    item?.id?.let { fragmentLayoutId ->
+                        supportFragmentManager.beginTransaction()
+                            .add(fragmentLayoutId, GalleryFragment.getInstance(3))
+                            .addToBackStack(null)
+                            .commit()
+                    }
                 }
+                it.visibility = View.GONE
             }
-
-            it.visibility = View.GONE
         }
     }
 
@@ -60,10 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         if (chosenImageList.isNotEmpty()) {
             val intent = Intent(this, ResultActivity::class.java)
-            intent.putStringArrayListExtra(
-                ResultActivity.GET_IMAGE_GALLERY_RESULT,
-                chosenImageList as ArrayList<String>
-            )
+            intent.putStringArrayListExtra(ResultActivity.GET_IMAGE_GALLERY_RESULT,chosenImageList as ArrayList<String>)
             startActivity(intent)
         }
 
@@ -75,5 +67,16 @@ class MainActivity : AppCompatActivity() {
                 it.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun checkExternalStoragePermission(): Boolean{
+        var permission = false
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_EXTERNAL_PERMISSION_REQUEST_CODE)
+        } else {
+            permission = true
+        }
+
+        return permission
     }
 }
