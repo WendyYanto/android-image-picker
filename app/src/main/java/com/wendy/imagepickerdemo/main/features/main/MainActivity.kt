@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.main
+package com.wendy.imagepickerdemo.main.features.main
 
 import android.Manifest
 import android.content.Intent
@@ -12,10 +12,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.ActivityMainBinding
-import com.wendy.imagepickerdemo.main.view.GalleryFragment
-import com.wendy.imagepickerdemo.result.ResultActivity
+import com.wendy.imagepickerdemo.main.features.gallery.GalleryFragment
+import com.wendy.imagepickerdemo.main.features.result.ResultActivity
 import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +33,12 @@ class MainActivity : AppCompatActivity() {
                 activityBinding?.flFragment.let { item ->
                     item?.id?.let { fragmentLayoutId ->
                         supportFragmentManager.beginTransaction()
-                            .add(fragmentLayoutId, GalleryFragment.getInstance(3))
+                            .add(
+                                fragmentLayoutId,
+                                GalleryFragment.getInstance(
+                                    3
+                                )
+                            )
                             .addToBackStack(null)
                             .commit()
                     }

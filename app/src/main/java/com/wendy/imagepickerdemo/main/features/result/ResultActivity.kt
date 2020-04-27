@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.result
+package com.wendy.imagepickerdemo.main.features.result
 
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.ActivityResultBinding
-import com.wendy.imagepickerdemo.result.adapter.ImageGalleryResultAdapter
+import com.wendy.imagepickerdemo.main.features.result.adapter.ImageGalleryResultAdapter
 
 class ResultActivity : AppCompatActivity() {
 

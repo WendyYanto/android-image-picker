@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.main.view.adapter
+package com.wendy.imagepickerdemo.main.features.gallery.adapter
 
 import android.databinding.DataBindingUtil
 import android.support.v7.recyclerview.extensions.ListAdapter
@@ -11,7 +11,7 @@ import android.widget.CheckBox
 import com.bumptech.glide.Glide
 import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.ImagePickerItemsBinding
-import com.wendy.imagepickerdemo.main.model.ImageGalleryUiModel
+import com.wendy.imagepickerdemo.main.features.gallery.model.ImageGalleryUiModel
 
 class ImageGalleryAdapter(
     private var items: MutableList<ImageGalleryUiModel>,

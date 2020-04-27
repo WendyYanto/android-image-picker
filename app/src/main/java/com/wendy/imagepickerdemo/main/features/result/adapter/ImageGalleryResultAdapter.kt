@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.result.adapter
+package com.wendy.imagepickerdemo.main.features.result.adapter
 
 import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
@@ -22,7 +22,7 @@ class ImageGalleryResultAdapter(private val items: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val imageGalleryViewHolder = holder as ImageGalleryResultAdapter.ImageResultViewHolder
+        val imageGalleryViewHolder = holder as ImageResultViewHolder
         val imageUri = items[position]
         imageGalleryViewHolder.bind(imageUri)
     }

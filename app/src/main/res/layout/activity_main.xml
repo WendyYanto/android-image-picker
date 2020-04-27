@@ -4,7 +4,7 @@
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".main.MainActivity">
+            tools:context=".main.features.main.MainActivity">
 
         <Button
             android:id="@+id/bt_show_gallery"

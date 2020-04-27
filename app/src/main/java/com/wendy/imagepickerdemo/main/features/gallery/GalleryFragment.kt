@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.main.view
+package com.wendy.imagepickerdemo.main.features.gallery
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -10,13 +10,14 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.Spinner
 import android.widget.Toast
-import com.wendy.imagepickerdemo.main.MainActivity
 import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.FragmentGalleryBinding
-import com.wendy.imagepickerdemo.main.model.ImageGalleryUiModel
-import com.wendy.imagepickerdemo.main.service.MediaHelper
-import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryAdapter
-import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryToolBarAdapter
+import com.wendy.imagepickerdemo.main.di.Injector
+import com.wendy.imagepickerdemo.main.features.gallery.model.ImageGalleryUiModel
+import com.wendy.imagepickerdemo.main.dao.MediaDao
+import com.wendy.imagepickerdemo.main.features.gallery.adapter.ImageGalleryAdapter
+import com.wendy.imagepickerdemo.main.features.gallery.adapter.ImageGalleryToolBarAdapter
+import com.wendy.imagepickerdemo.main.features.main.MainActivity
 import kotlinx.coroutines.*
 import kotlinx.coroutines.android.Main
 
@@ -32,11 +33,15 @@ class GalleryFragment : Fragment() {
     private var maxCount: Int? = null
     private var currentCategoryIndex = 0
     private var fetchImageJob: Job? = null
+    private val mediaDao: MediaDao by lazy {
+        Injector.get<MediaDao>()
+    }
 
     companion object {
         private const val MAX_COUNT: String = "GALLERY_FRAGMENT_MAX_COUNT"
         fun getInstance(maxCount: Int): GalleryFragment {
-            val galleryFragment = GalleryFragment()
+            val galleryFragment =
+                GalleryFragment()
             val bundle = Bundle()
             bundle.putInt(MAX_COUNT, maxCount)
             galleryFragment.arguments = bundle
@@ -146,7 +151,7 @@ class GalleryFragment : Fragment() {
                 imageGalleryUiModelList.clear()
 
                 imageGalleryUiModelList = withContext(Dispatchers.IO) {
-                    MediaHelper.getImageGallery(it)
+                    mediaDao.getImageGallery() as MutableMap
                 }
 
                 if (imageGalleryUiModelList.isNotEmpty()) {
