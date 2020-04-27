@@ -70,7 +70,7 @@ class GalleryFragment : Fragment(), GalleryView {
 
         galleryFragmentBinding.btSubmit.setOnClickListener {
             val currentParentActivity = activity as MainActivity
-            currentParentActivity.getImageGalleryResultFromGalleryFragment(chosenImages)
+            currentParentActivity.showResults(chosenImages)
         }
 
         actionBar = (activity as AppCompatActivity).supportActionBar

@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         toggleShowGalleryButtonVisibility()
     }
 
-    fun getImageGalleryResultFromGalleryFragment(chosenImageList: MutableList<String>) {
+    fun showResults(chosenImageList: MutableList<String>) {
         supportFragmentManager.popBackStackImmediate()
         supportActionBar?.title = TAG_NAME
         toggleShowGalleryButtonVisibility()
