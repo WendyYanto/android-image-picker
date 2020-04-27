@@ -159,7 +159,7 @@ class GalleryFragment : Fragment() {
     }
 
     private fun changeImageListInImageGalleryAdapter() {
-        imageGalleryAdapter?.changeItemsData(imageGalleryUiModelList[categoryList[currentCategoryIndex]] as MutableList<ImageGalleryUiModel>)
+        imageGalleryAdapter?.submitList(imageGalleryUiModelList[categoryList[currentCategoryIndex]]?.toMutableList())
     }
 
     private fun setUpImageGalleryAdapter() {

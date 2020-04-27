@@ -1,6 +1,8 @@
 package com.wendy.imagepickerdemo.main.view.adapter
 
 import android.databinding.DataBindingUtil
+import android.support.v7.recyclerview.extensions.ListAdapter
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +16,9 @@ import com.wendy.imagepickerdemo.main.model.ImageGalleryUiModel
 class ImageGalleryAdapter(
     private var items: MutableList<ImageGalleryUiModel>,
     private val listener: (imageUri: String, createAction: Boolean) -> Boolean
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : ListAdapter<ImageGalleryUiModel, ImageGalleryAdapter.ImageGalleryViewHolder>(DIFF_UTIL) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageGalleryViewHolder {
         return ImageGalleryViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.image_picker_items, parent, false)
         )
@@ -27,15 +28,10 @@ class ImageGalleryAdapter(
         return items.size
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val imageGalleryViewHolder: ImageGalleryViewHolder = holder as ImageGalleryViewHolder
+    override fun onBindViewHolder(holder: ImageGalleryViewHolder, position: Int) {
+        val imageGalleryViewHolder: ImageGalleryViewHolder = holder
         val imageUri = items[position]
         imageGalleryViewHolder.bind(imageUri)
-    }
-
-    fun changeItemsData(newItems: MutableList<ImageGalleryUiModel>) {
-        items = newItems
-        notifyDataSetChanged()
     }
 
     inner class ImageGalleryViewHolder(itemView: View) :
@@ -75,6 +71,25 @@ class ImageGalleryAdapter(
         private fun updateCheckBox(checkBox: CheckBox, state: Boolean) {
             this.imageGalleryUiModel.isChecked = state
             checkBox.isChecked = state
+        }
+    }
+
+    companion object {
+        private val DIFF_UTIL = object : DiffUtil.ItemCallback<ImageGalleryUiModel>() {
+            override fun areItemsTheSame(
+                oldImage: ImageGalleryUiModel,
+                newImage: ImageGalleryUiModel
+            ): Boolean {
+                return oldImage == newImage
+            }
+
+            override fun areContentsTheSame(
+                oldImage: ImageGalleryUiModel,
+                newImage: ImageGalleryUiModel
+            ): Boolean {
+                return oldImage.imageUri == newImage.imageUri && oldImage.isChecked == newImage.isChecked
+            }
+
         }
     }
 }
