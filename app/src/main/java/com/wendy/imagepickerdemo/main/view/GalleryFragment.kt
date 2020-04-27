@@ -31,7 +31,8 @@ class GalleryFragment : Fragment() {
     private var actionBar: ActionBar? = null
     private var categoryList: MutableList<String> = mutableListOf()
     private val chosenImageList: MutableList<String> = mutableListOf()
-    private var imageGalleryUiModelList: MutableMap<String, ArrayList<ImageGalleryUiModel>> = mutableMapOf()
+    private var imageGalleryUiModelList: MutableMap<String, ArrayList<ImageGalleryUiModel>> =
+        mutableMapOf()
     private var maxCount: Int? = null
     private var currentCategoryIndex = 0
 
@@ -51,8 +52,13 @@ class GalleryFragment : Fragment() {
         maxCount = arguments?.getInt(MAX_COUNT, 0)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        galleryFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_gallery, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        galleryFragmentBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_gallery, container, false)
 
         galleryFragmentBinding.btSubmit.setOnClickListener {
             val currentParentActivity = activity as MainActivity
@@ -61,7 +67,7 @@ class GalleryFragment : Fragment() {
 
         actionBar = (activity as AppCompatActivity).supportActionBar
         setHasOptionsMenu(true)
-        return galleryFragmentBinding.root
+        return this.galleryFragmentBinding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -85,7 +91,12 @@ class GalleryFragment : Fragment() {
                     // Do nothing
                 }
 
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
                     currentCategoryIndex = position
                     changeImageListInImageGalleryAdapter()
                 }
@@ -106,7 +117,11 @@ class GalleryFragment : Fragment() {
                 if (chosenImageList.size < it) {
                     chosenImageList.add(imageUri)
                 } else {
-                    Toast.makeText(context, "You Cannot Select More Than $maxCount", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "You Cannot Select More Than $maxCount",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return false
                 }
             }

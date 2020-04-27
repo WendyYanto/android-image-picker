@@ -13,14 +13,16 @@ class MediaHelper {
         private val ALLOWED_IMAGE_TYPE = arrayOf("png", "jpg", "jpeg")
 
         fun getImageGallery(context: Context): MutableMap<String, ArrayList<ImageGalleryUiModel>> {
-            val fetchImageGalleryList: MutableMap<String, ArrayList<ImageGalleryUiModel>> = mutableMapOf()
+            val fetchImageGalleryList: MutableMap<String, ArrayList<ImageGalleryUiModel>> =
+                mutableMapOf()
             val projection = arrayOf(
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
                 MediaStore.Images.Media.DATA
             )
 
             val images: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            val cursor: Cursor? = context.contentResolver.query(images, projection, null, null, null)
+            val cursor: Cursor? =
+                context.contentResolver.query(images, projection, null, null, null)
 
             if (cursor?.moveToFirst() == true) {
                 var bucket: String
@@ -34,7 +36,13 @@ class MediaHelper {
                     if (fetchImageGalleryList[bucket] == null) {
                         fetchImageGalleryList[bucket] = ArrayList()
                     }
-                    if (uri.substring(uri.length - 3, uri.length) in ALLOWED_IMAGE_TYPE || uri.substring( uri.length - 4, uri.length) in ALLOWED_IMAGE_TYPE
+                    if (uri.substring(
+                            uri.length - 3,
+                            uri.length
+                        ) in ALLOWED_IMAGE_TYPE || uri.substring(
+                            uri.length - 4,
+                            uri.length
+                        ) in ALLOWED_IMAGE_TYPE
                     ) {
                         fetchImageGalleryList[bucket]?.add(ImageGalleryUiModel(imageUri = uri))
                     }

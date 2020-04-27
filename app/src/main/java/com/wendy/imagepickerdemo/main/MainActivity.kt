@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
         activityBinding?.btShowGallery?.setOnClickListener {
             if (checkExternalStoragePermission()) {
                 activityBinding?.flFragment.let { item ->
@@ -52,19 +51,22 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.popBackStackImmediate()
         supportActionBar?.title = TAG_NAME
         toggleShowGalleryButtonVisibility()
-
         if (chosenImageList.isNotEmpty()) {
             val intent = Intent(this, ResultActivity::class.java)
-            intent.putStringArrayListExtra(ResultActivity.GET_IMAGE_GALLERY_RESULT,chosenImageList as ArrayList<String>)
+            intent.putStringArrayListExtra(
+                ResultActivity.GET_IMAGE_GALLERY_RESULT,
+                chosenImageList as ArrayList<String>
+            )
             startActivity(intent)
         }
-
     }
 
     private fun toggleShowGalleryButtonVisibility() {
         activityBinding?.btShowGallery?.let {
             if (it.visibility == View.GONE) {
                 it.visibility = View.VISIBLE
+            } else {
+                it.visibility = View.GONE
             }
         }
     }
@@ -76,7 +78,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             permission = true
         }
-
         return permission
     }
 }

@@ -18,10 +18,8 @@ class ImageGalleryAdapter(
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val imageGalleryItem = LayoutInflater.from(parent.context).inflate(R.layout.image_picker_items, parent, false)
         return ImageGalleryViewHolder(
-            imageGalleryItem,
-            listener
+            LayoutInflater.from(parent.context).inflate(R.layout.image_picker_items, parent, false)
         )
     }
 
@@ -40,10 +38,7 @@ class ImageGalleryAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ImageGalleryViewHolder(
-        itemView: View,
-        private val listener: (imageUri: String, createAction: Boolean) -> Boolean
-    ) :
+    inner class ImageGalleryViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         private val viewBinding: ImagePickerItemsBinding? = DataBindingUtil.bind(itemView)
@@ -52,9 +47,10 @@ class ImageGalleryAdapter(
         fun bind(imageGalleryUiModel: ImageGalleryUiModel) {
             this.imageGalleryUiModel = imageGalleryUiModel
             viewBinding?.ivPhoto?.let {
-                Glide.with(itemView).load(imageGalleryUiModel.imageUri).placeholder(R.drawable.image_placeholder).into(
-                    it
-                )
+                Glide.with(itemView).load(imageGalleryUiModel.imageUri)
+                    .placeholder(R.drawable.image_placeholder).into(
+                        it
+                    )
                 it.setOnClickListener(this)
             }
             viewBinding?.cbImageItem?.let {
