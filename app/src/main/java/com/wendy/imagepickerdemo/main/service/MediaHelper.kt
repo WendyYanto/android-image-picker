@@ -23,7 +23,7 @@ class MediaHelper {
             val images: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             val cursor: Cursor? =
                 context.contentResolver.query(images, projection, null, null, null)
-
+            
             if (cursor?.moveToFirst() == true) {
                 var bucket: String
                 var uri: String

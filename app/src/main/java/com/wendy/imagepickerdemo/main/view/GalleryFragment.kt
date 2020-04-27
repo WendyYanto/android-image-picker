@@ -17,12 +17,8 @@ import com.wendy.imagepickerdemo.main.model.ImageGalleryUiModel
 import com.wendy.imagepickerdemo.main.service.MediaHelper
 import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryAdapter
 import com.wendy.imagepickerdemo.main.view.adapter.ImageGalleryToolBarAdapter
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.android.Main
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.IO
 
 class GalleryFragment : Fragment() {
 
@@ -35,6 +31,7 @@ class GalleryFragment : Fragment() {
         mutableMapOf()
     private var maxCount: Int? = null
     private var currentCategoryIndex = 0
+    private var fetchImageJob: Job? = null
 
     companion object {
         private const val MAX_COUNT: String = "GALLERY_FRAGMENT_MAX_COUNT"
@@ -111,6 +108,11 @@ class GalleryFragment : Fragment() {
         getImageGalleryList()
     }
 
+    override fun onPause() {
+        super.onPause()
+        fetchImageJob?.cancel()
+    }
+
     private fun updateChosenImageList(imageUri: String, createAction: Boolean): Boolean {
         if (createAction) {
             maxCount?.let {
@@ -139,7 +141,7 @@ class GalleryFragment : Fragment() {
 
     private fun getImageGalleryList() {
         activity?.let {
-            CoroutineScope(Dispatchers.Main).launch {
+            fetchImageJob = CoroutineScope(Dispatchers.Main).launch {
                 categoryList.clear()
                 imageGalleryUiModelList.clear()
 
