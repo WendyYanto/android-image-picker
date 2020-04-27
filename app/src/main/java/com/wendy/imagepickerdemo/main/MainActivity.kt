@@ -4,16 +4,18 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.ActionBar
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.ActivityMainBinding
 import com.wendy.imagepickerdemo.main.view.GalleryFragment
 import com.wendy.imagepickerdemo.result.ResultActivity
-import java.util.ArrayList
+import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -65,16 +67,27 @@ class MainActivity : AppCompatActivity() {
         activityBinding?.btShowGallery?.let {
             if (it.visibility == View.GONE) {
                 it.visibility = View.VISIBLE
+                supportActionBar?.title = getString(R.string.app_name)
+                supportActionBar?.displayOptions =
+                    ActionBar.DISPLAY_SHOW_HOME or ActionBar.DISPLAY_SHOW_TITLE
             } else {
                 it.visibility = View.GONE
             }
         }
     }
 
-    private fun checkExternalStoragePermission(): Boolean{
+    private fun checkExternalStoragePermission(): Boolean {
         var permission = false
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_EXTERNAL_PERMISSION_REQUEST_CODE)
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                READ_EXTERNAL_PERMISSION_REQUEST_CODE
+            )
         } else {
             permission = true
         }
