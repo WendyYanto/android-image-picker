@@ -23,15 +23,15 @@ class MainActivity : AppCompatActivity() {
         private const val READ_EXTERNAL_PERMISSION_REQUEST_CODE = 1
     }
 
-    private var activityBinding: ActivityMainBinding? = null
+    private lateinit var activityBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        activityBinding?.btShowGallery?.setOnClickListener {
+        activityBinding.btShowGallery.setOnClickListener {
             if (checkExternalStoragePermission()) {
-                activityBinding?.flFragment.let { item ->
-                    item?.id?.let { fragmentLayoutId ->
+                activityBinding.flFragment.let { item ->
+                    item.id.let { fragmentLayoutId ->
                         supportFragmentManager.beginTransaction()
                             .add(
                                 fragmentLayoutId,
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toggleShowGalleryButtonVisibility() {
-        activityBinding?.btShowGallery?.let {
+        activityBinding.btShowGallery.let {
             if (it.visibility == View.GONE) {
                 it.visibility = View.VISIBLE
                 supportActionBar?.title = getString(R.string.app_name)
