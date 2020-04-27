@@ -14,7 +14,6 @@ import com.wendy.imagepickerdemo.databinding.ImagePickerItemsBinding
 import com.wendy.imagepickerdemo.main.features.gallery.model.ImageGalleryUiModel
 
 class ImageGalleryAdapter(
-    private var items: MutableList<ImageGalleryUiModel>,
     private val listener: (imageUri: String, createAction: Boolean) -> Boolean
 ) : ListAdapter<ImageGalleryUiModel, ImageGalleryAdapter.ImageGalleryViewHolder>(DIFF_UTIL) {
 
@@ -24,14 +23,9 @@ class ImageGalleryAdapter(
         )
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
-
     override fun onBindViewHolder(holder: ImageGalleryViewHolder, position: Int) {
         val imageGalleryViewHolder: ImageGalleryViewHolder = holder
-        val imageUri = items[position]
-        imageGalleryViewHolder.bind(imageUri)
+        imageGalleryViewHolder.bind(getItem(position))
     }
 
     inner class ImageGalleryViewHolder(itemView: View) :

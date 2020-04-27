@@ -1,4 +1,4 @@
-package com.wendy.imagepickerdemo.main.features.gallery
+package com.wendy.imagepickerdemo.main.features.gallery.view
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -14,28 +14,25 @@ import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.FragmentGalleryBinding
 import com.wendy.imagepickerdemo.main.di.Injector
 import com.wendy.imagepickerdemo.main.features.gallery.model.ImageGalleryUiModel
-import com.wendy.imagepickerdemo.main.dao.MediaDao
 import com.wendy.imagepickerdemo.main.features.gallery.adapter.ImageGalleryAdapter
 import com.wendy.imagepickerdemo.main.features.gallery.adapter.ImageGalleryToolBarAdapter
+import com.wendy.imagepickerdemo.main.features.gallery.presenter.GalleryPresenter
+import com.wendy.imagepickerdemo.main.features.gallery.presenter.GalleryPresenterImpl
 import com.wendy.imagepickerdemo.main.features.main.MainActivity
-import kotlinx.coroutines.*
-import kotlinx.coroutines.android.Main
 
-class GalleryFragment : Fragment() {
+class GalleryFragment : Fragment(), GalleryView {
 
     private lateinit var galleryFragmentBinding: FragmentGalleryBinding
-    private var imageGalleryAdapter: ImageGalleryAdapter? = null
+    private lateinit var galleryPresenter: GalleryPresenter
+    private var adapter: ImageGalleryAdapter? = null
     private var actionBar: ActionBar? = null
-    private var categoryList: MutableList<String> = mutableListOf()
-    private val chosenImageList: MutableList<String> = mutableListOf()
-    private var imageGalleryUiModelList: MutableMap<String, ArrayList<ImageGalleryUiModel>> =
+
+    private var categories: MutableList<String> = mutableListOf()
+    private val chosenImages: MutableList<String> = mutableListOf()
+    private var images: MutableMap<String, List<ImageGalleryUiModel>> =
         mutableMapOf()
     private var maxCount: Int? = null
-    private var currentCategoryIndex = 0
-    private var fetchImageJob: Job? = null
-    private val mediaDao: MediaDao by lazy {
-        Injector.get<MediaDao>()
-    }
+    private var categoryIndex = 0
 
     companion object {
         private const val MAX_COUNT: String = "GALLERY_FRAGMENT_MAX_COUNT"
@@ -52,6 +49,15 @@ class GalleryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         maxCount = arguments?.getInt(MAX_COUNT, 0)
+        initPresenter()
+    }
+
+    private fun initPresenter() {
+        Injector.store(
+            GalleryPresenter::class.java,
+            GalleryPresenterImpl(this, Injector.get())
+        )
+        galleryPresenter = Injector.get()
     }
 
     override fun onCreateView(
@@ -64,7 +70,7 @@ class GalleryFragment : Fragment() {
 
         galleryFragmentBinding.btSubmit.setOnClickListener {
             val currentParentActivity = activity as MainActivity
-            currentParentActivity.getImageGalleryResultFromGalleryFragment(chosenImageList)
+            currentParentActivity.getImageGalleryResultFromGalleryFragment(chosenImages)
         }
 
         actionBar = (activity as AppCompatActivity).supportActionBar
@@ -72,10 +78,30 @@ class GalleryFragment : Fragment() {
         return this.galleryFragmentBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupAdapter()
+    }
+
+    private fun setupAdapter() {
+        val galleryAdapter = ImageGalleryAdapter(::updateChosenImages)
+        this.adapter = galleryAdapter
+        with(galleryFragmentBinding.rvGridImage) {
+            layoutManager = GridLayoutManager(
+                context,
+                3
+            )
+            adapter = galleryAdapter
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.gallery_toolbar_menu, menu)
+        setupToolbarAdapter(menu)
+    }
 
+    private fun setupToolbarAdapter(menu: Menu?) {
         val spinnerMenuItem: MenuItem? = menu?.findItem(R.id.media_category_spinner)
         val spinner: Spinner = spinnerMenuItem?.actionView as Spinner
 
@@ -84,7 +110,7 @@ class GalleryFragment : Fragment() {
                 ImageGalleryToolBarAdapter(
                     it,
                     android.R.layout.simple_spinner_dropdown_item,
-                    categoryList
+                    categories
                 )
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = spinnerAdapter
@@ -99,8 +125,8 @@ class GalleryFragment : Fragment() {
                     position: Int,
                     id: Long
                 ) {
-                    currentCategoryIndex = position
-                    changeImageListInImageGalleryAdapter()
+                    categoryIndex = position
+                    populateImages()
                 }
             }
         }
@@ -108,21 +134,16 @@ class GalleryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        chosenImageList.clear()
+        chosenImages.clear()
         updateTitleBar()
-        getImageGalleryList()
+        galleryPresenter.fetchImages()
     }
 
-    override fun onPause() {
-        super.onPause()
-        fetchImageJob?.cancel()
-    }
-
-    private fun updateChosenImageList(imageUri: String, createAction: Boolean): Boolean {
+    private fun updateChosenImages(imageUri: String, createAction: Boolean): Boolean {
         if (createAction) {
             maxCount?.let {
-                if (chosenImageList.size < it) {
-                    chosenImageList.add(imageUri)
+                if (chosenImages.size < it) {
+                    chosenImages.add(imageUri)
                 } else {
                     Toast.makeText(
                         context,
@@ -133,60 +154,36 @@ class GalleryFragment : Fragment() {
                 }
             }
         } else {
-            chosenImageList.remove(imageUri)
+            chosenImages.remove(imageUri)
         }
-
         updateTitleBar()
         return true
     }
 
     private fun updateTitleBar() {
-        actionBar?.title = "${chosenImageList.size}/$maxCount Selected"
+        actionBar?.title = "${chosenImages.size}/$maxCount Selected"
     }
 
-    private fun getImageGalleryList() {
+    private fun populateImages() {
+        adapter?.submitList(images[categories[categoryIndex]]?.toMutableList())
+    }
+
+    override fun showImages(images: Map<String, List<ImageGalleryUiModel>>) {
         activity?.let {
-            fetchImageJob = CoroutineScope(Dispatchers.Main).launch {
-                categoryList.clear()
-                imageGalleryUiModelList.clear()
-
-                imageGalleryUiModelList = withContext(Dispatchers.IO) {
-                    mediaDao.getImageGallery() as MutableMap
-                }
-
-                if (imageGalleryUiModelList.isNotEmpty()) {
-                    imageGalleryUiModelList.keys.forEach { key ->
-                        categoryList.add(key)
-                    }
-                    it.invalidateOptionsMenu()
-                    setUpImageGalleryAdapter()
-                }
+            categories.clear()
+            this.images.clear()
+            this.images.putAll(images)
+            if (this.images.isNotEmpty()) {
+                categories.addAll(images.keys)
+                it.invalidateOptionsMenu()
+                populateImages()
             }
         }
     }
 
-    private fun changeImageListInImageGalleryAdapter() {
-        imageGalleryAdapter?.submitList(imageGalleryUiModelList[categoryList[currentCategoryIndex]]?.toMutableList())
-    }
-
-    private fun setUpImageGalleryAdapter() {
-        imageGalleryAdapter?.let {
-            changeImageListInImageGalleryAdapter()
-        } ?: run {
-            galleryFragmentBinding.rvGridImage.apply {
-                val gridLayoutManager = GridLayoutManager(
-                    context,
-                    3
-                )
-                layoutManager = gridLayoutManager
-                if (imageGalleryAdapter == null) {
-                    imageGalleryAdapter =
-                        ImageGalleryAdapter(imageGalleryUiModelList[categoryList[currentCategoryIndex]] as MutableList<ImageGalleryUiModel>) { imageUri, createAction ->
-                            updateChosenImageList(imageUri, createAction)
-                        }
-                }
-                adapter = imageGalleryAdapter
-            }
-        }
+    override fun onDetach() {
+        super.onDetach()
+        galleryPresenter.detach()
+        Injector.remove(GalleryPresenter::class.java)
     }
 }

@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.ActivityMainBinding
-import com.wendy.imagepickerdemo.main.features.gallery.GalleryFragment
+import com.wendy.imagepickerdemo.main.features.gallery.view.GalleryFragment
 import com.wendy.imagepickerdemo.main.features.result.ResultActivity
 import java.util.*
 
