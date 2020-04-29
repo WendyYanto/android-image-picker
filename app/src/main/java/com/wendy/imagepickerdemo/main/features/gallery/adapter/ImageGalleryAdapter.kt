@@ -1,6 +1,5 @@
 package com.wendy.imagepickerdemo.main.features.gallery.adapter
 
-import android.databinding.DataBindingUtil
 import android.support.v7.recyclerview.extensions.ListAdapter
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
@@ -10,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import com.bumptech.glide.Glide
 import com.wendy.imagepickerdemo.R
-import com.wendy.imagepickerdemo.databinding.ImagePickerItemsBinding
+import com.wendy.imagepickerdemo.databinding.ItemImageBinding
 import com.wendy.imagepickerdemo.main.features.gallery.model.ImageGalleryUiModel
 
 class ImageGalleryAdapter(
@@ -19,7 +18,7 @@ class ImageGalleryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageGalleryViewHolder {
         return ImageGalleryViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.image_picker_items, parent, false)
+            ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -28,22 +27,21 @@ class ImageGalleryAdapter(
         imageGalleryViewHolder.bind(getItem(position))
     }
 
-    inner class ImageGalleryViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class ImageGalleryViewHolder(private val viewBinding: ItemImageBinding) :
+        RecyclerView.ViewHolder(viewBinding.root), View.OnClickListener {
 
-        private val viewBinding: ImagePickerItemsBinding? = DataBindingUtil.bind(itemView)
         private lateinit var imageGalleryUiModel: ImageGalleryUiModel
 
         fun bind(imageGalleryUiModel: ImageGalleryUiModel) {
             this.imageGalleryUiModel = imageGalleryUiModel
-            viewBinding?.ivPhoto?.let {
+            viewBinding.ivPhoto.let {
                 Glide.with(itemView).load(imageGalleryUiModel.imageUri)
                     .placeholder(R.drawable.image_placeholder).into(
                         it
                     )
                 it.setOnClickListener(this)
             }
-            viewBinding?.cbImageItem?.let {
+            viewBinding.cbImageItem.let {
                 if (imageGalleryUiModel.isChecked) {
                     it.isChecked = true
                     return
@@ -53,7 +51,7 @@ class ImageGalleryAdapter(
         }
 
         override fun onClick(v: View?) {
-            viewBinding?.cbImageItem?.let {
+            viewBinding.cbImageItem.let {
                 if (it.isChecked && listener.invoke(this.imageGalleryUiModel.imageUri, false)) {
                     updateCheckBox(it, false)
                 } else if (listener.invoke(this.imageGalleryUiModel.imageUri, true)) {

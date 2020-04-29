@@ -1,6 +1,5 @@
 package com.wendy.imagepickerdemo.main.features.result.adapter
 
-import android.databinding.DataBindingUtil
 import android.support.v7.recyclerview.extensions.ListAdapter
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
@@ -10,14 +9,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.wendy.imagepickerdemo.R
-import com.wendy.imagepickerdemo.databinding.ImagePickerItemsBinding
+import com.wendy.imagepickerdemo.databinding.ItemImageBinding
 
 class ImageGalleryResultAdapter :
     ListAdapter<String, ImageGalleryResultAdapter.ImageResultViewHolder>(DIFF_UTIL) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageResultViewHolder {
-        val imageResultItem =
-            LayoutInflater.from(parent.context).inflate(R.layout.image_picker_items, parent, false)
-        return ImageResultViewHolder(imageResultItem)
+        val binding = ItemImageBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return ImageResultViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ImageResultViewHolder, position: Int) {
@@ -25,13 +27,12 @@ class ImageGalleryResultAdapter :
         holder.bind(imageUri)
     }
 
-    inner class ImageResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val viewBinding: ImagePickerItemsBinding? = DataBindingUtil.bind(itemView)
+    inner class ImageResultViewHolder(private val viewBinding: ItemImageBinding) :
+        RecyclerView.ViewHolder(viewBinding.root) {
 
         fun bind(imageUri: String) {
-            viewBinding?.cbImageItem?.visibility = View.GONE
-            viewBinding?.ivPhoto?.let {
+            viewBinding.cbImageItem.visibility = View.GONE
+            viewBinding.ivPhoto.let {
                 it.scaleType = ImageView.ScaleType.FIT_CENTER
                 Glide.with(itemView).load(imageUri).placeholder(R.drawable.image_placeholder)
                     .into(it)

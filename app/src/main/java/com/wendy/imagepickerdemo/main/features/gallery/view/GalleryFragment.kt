@@ -1,6 +1,5 @@
 package com.wendy.imagepickerdemo.main.features.gallery.view
 
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBar
@@ -66,7 +65,7 @@ class GalleryFragment : Fragment(), GalleryView {
         savedInstanceState: Bundle?
     ): View? {
         galleryFragmentBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_gallery, container, false)
+            FragmentGalleryBinding.inflate(inflater, container, false)
 
         galleryFragmentBinding.btSubmit.setOnClickListener {
             val currentParentActivity = activity as MainActivity

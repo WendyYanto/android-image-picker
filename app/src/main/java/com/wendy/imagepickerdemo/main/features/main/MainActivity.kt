@@ -3,7 +3,6 @@ package com.wendy.imagepickerdemo.main.features.main
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -27,7 +26,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        activityBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
         activityBinding.btShowGallery.setOnClickListener {
             if (checkExternalStoragePermission()) {
                 activityBinding.flFragment.let { item ->
