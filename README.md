@@ -57,4 +57,5 @@ intent.putExtra(GalleryActivity.THEME, R.style.GalleryTheme)
 intent.putExtra(GalleryActivity.CATEGORY_DROPDOWN_ITEM_LAYOUT, R.layout.spinner_item)
 ```
 Example Output: 
+
 ![Styled Gallery](https://github.com/WendyYanto/android-image-picker/blob/master/images/custom_sample.png)
