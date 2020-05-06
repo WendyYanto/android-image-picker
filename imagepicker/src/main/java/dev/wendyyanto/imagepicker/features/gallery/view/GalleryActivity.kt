@@ -49,11 +49,7 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
         activityGalleryBinding = ActivityGalleryBinding.inflate(layoutInflater)
         setContentView(activityGalleryBinding.root)
         setupAdapter()
-
-        if (checkExternalStoragePermission()) {
-            initPresenter()
-        }
-
+        initPresenter()
         activityGalleryBinding.btSubmit.setOnClickListener {
             val data = Intent()
             data.putStringArrayListExtra(RESULT, chosenImages)
@@ -118,9 +114,11 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
 
     override fun onResume() {
         super.onResume()
-        chosenImages.clear()
-        updateTitleBar()
-        galleryPresenter.fetchImages()
+        if (isStoragePermissionAllowed()) {
+            chosenImages.clear()
+            updateTitleBar()
+            galleryPresenter.fetchImages()
+        }
     }
 
     private fun updateChosenImages(imageUri: String, createAction: Boolean): Boolean {
@@ -169,7 +167,7 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
         Injector.remove(GalleryPresenter::class.java)
     }
 
-    private fun checkExternalStoragePermission(): Boolean {
+    private fun isStoragePermissionAllowed(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_EXTERNAL_STORAGE
