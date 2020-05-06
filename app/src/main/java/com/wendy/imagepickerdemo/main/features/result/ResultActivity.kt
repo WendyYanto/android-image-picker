@@ -1,8 +1,8 @@
 package com.wendy.imagepickerdemo.main.features.result
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.wendy.imagepickerdemo.databinding.ActivityResultBinding
 import com.wendy.imagepickerdemo.main.features.result.adapter.ImageGalleryResultAdapter
 
@@ -23,7 +23,8 @@ class ResultActivity : AppCompatActivity() {
         val results = intent.getStringArrayListExtra(GET_IMAGE_GALLERY_RESULT)
         imageGalleryResultAdapter = ImageGalleryResultAdapter()
         with(binding.rvImageResult) {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager =
+                LinearLayoutManager(context)
             adapter = imageGalleryResultAdapter
         }
         imageGalleryResultAdapter.submitList(results)
