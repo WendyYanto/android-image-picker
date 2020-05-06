@@ -1,5 +1,7 @@
 [![](https://jitpack.io/v/WendyYanto/android-image-picker.svg)](https://jitpack.io/#WendyYanto/android-image-picker)
 
+![Demo](https://github.com/WendyYanto/android-image-picker/blob/master/images/sample.png)
+
 # Implementation Steps
 
 1. This library has already been included in jitpack.io. In order to use it, you should add it in your root build.gradle at the end of repositories:
