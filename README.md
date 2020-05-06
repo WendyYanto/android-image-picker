@@ -20,7 +20,7 @@ allprojects {
 2.  Add the dependency
 ```
 dependencies {
-  implementation 'com.github.WendyYanto:android-image-picker:v1.1.0'
+  implementation 'com.github.WendyYanto:android-image-picker:v1.2.0'
 }
 ```
 3. Register the code below in Android.Manifest.xml
