@@ -42,7 +42,7 @@ Definition of Intent Extra's for GalleryActivity :
 1. MAX_COUNT: Maximum images user can select from gallery (default value: 1)
 2. SUBMIT_BUTTON_STYLE: Style attributes for submit button (default: android button style)
 3. THEME: Theme for GalleryActivity (default: your app theme)
-4. CATEGORY_DROPDOWN_ITEM_LAYOUT: Layout for your image category spinner item at the toolbar (default: android.R.layout.simple_spinner_dropdown_item)
+4. CATEGORY_DROPDOWN_ITEM_LAYOUT: Layout for your image category spinner item at the toolbar (default: `android.R.layout.simple_spinner_dropdown_item`)
 
 Example: 
 ```
