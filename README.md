@@ -1,5 +1,7 @@
 # Android Image Picker
 
+Image gallery library by using coroutine to help user to choose image (single or multi) from android device without usage of android gallery implicit intent. This library supports **AndroidX** and it is **very recommended** to use **AndroidX** in your project. 
+
 [![](https://jitpack.io/v/WendyYanto/android-image-picker.svg)](https://jitpack.io/#WendyYanto/android-image-picker)
 
 ![Demo](https://github.com/WendyYanto/android-image-picker/blob/master/images/sample.png)
@@ -29,7 +31,7 @@ dependencies {
   <activity android:name="dev.wendyyanto.imagepicker.features.gallery.view.GalleryActivity" />
 </application>
 ```
-4. Implement dependency injection of this plugin by initialize this code once. It is recommended to add this code at `Application()`
+4. Implement dependency injection of this plugin by initialize this code once. Usage of MediaDao is to fetch images using coroutines. It is recommended to add this code at `Application()`
 ```
 override fun onCreate() {
     super.onCreate()
