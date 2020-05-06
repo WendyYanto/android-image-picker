@@ -25,9 +25,11 @@ dependencies {
 ```
 3. Register the code below in Android.Manifest.xml
 ```
+// Provide permission to read image in android device
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 <application>
+  // Register Activity
   <activity android:name="dev.wendyyanto.imagepicker.features.gallery.view.GalleryActivity" />
 </application>
 ```
@@ -54,4 +56,5 @@ intent.putExtra(GalleryActivity.SUBMIT_BUTTON_STYLE, R.style.MyButton)
 intent.putExtra(GalleryActivity.THEME, R.style.GalleryTheme)
 intent.putExtra(GalleryActivity.CATEGORY_DROPDOWN_ITEM_LAYOUT, R.layout.spinner_item)
 ```
+Example Output: 
 ![Styled Gallery](https://github.com/WendyYanto/android-image-picker/blob/master/images/custom_sample.png)
