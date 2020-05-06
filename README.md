@@ -18,7 +18,7 @@ allprojects {
 2.  Add the dependency
 ```
 dependencies {
-  implementation 'com.github.WendyYanto:android-image-picker:Tag'
+  implementation 'com.github.WendyYanto:android-image-picker:v1.1.0'
 }
 ```
 3. Register the code below in Android.Manifest.xml
