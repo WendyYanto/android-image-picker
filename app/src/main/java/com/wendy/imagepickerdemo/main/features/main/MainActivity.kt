@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(GalleryActivity.SUBMIT_BUTTON_STYLE, R.style.MyButton)
             intent.putExtra(GalleryActivity.THEME, R.style.GalleryTheme)
             intent.putExtra(GalleryActivity.CATEGORY_DROPDOWN_ITEM_LAYOUT, R.layout.spinner_item)
+            intent.putExtra(GalleryActivity.MAX_COUNT, 3)
             startActivityForResult(intent, GALLERY_REQUEST_CODE)
         }
     }

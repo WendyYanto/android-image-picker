@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="warning_max_count">You cannot select more than %d</string>
+    <string name="chosen_image_counter">%s selected</string>
+</resources>

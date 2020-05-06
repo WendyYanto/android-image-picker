@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.*
 import android.widget.AdapterView
@@ -16,20 +15,19 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.airbnb.paris.extensions.style
 import dev.wendyyanto.imagepicker.R
+import dev.wendyyanto.imagepicker.databinding.ActivityGalleryBinding
 import dev.wendyyanto.imagepicker.di.Injector
 import dev.wendyyanto.imagepicker.features.gallery.model.ImageGalleryUiModel
 import dev.wendyyanto.imagepicker.features.gallery.adapter.ImageGalleryAdapter
 import dev.wendyyanto.imagepicker.features.gallery.adapter.ImageGalleryToolBarAdapter
 import dev.wendyyanto.imagepicker.features.gallery.presenter.GalleryPresenter
 import dev.wendyyanto.imagepicker.features.gallery.presenter.GalleryPresenterImpl
-import dev.wendyyanto.imagepicker.databinding.ActivityGalleryBinding
 
 class GalleryActivity : AppCompatActivity(), GalleryView {
 
     private lateinit var activityGalleryBinding: ActivityGalleryBinding
     private lateinit var galleryPresenter: GalleryPresenter
     private lateinit var adapter: ImageGalleryAdapter
-    private var actionBar: ActionBar? = null
 
     private var categories: MutableList<String> = mutableListOf()
     private val chosenImages: ArrayList<String> = arrayListOf()
@@ -52,16 +50,10 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
         setupTheme()
         maxCount = intent.getIntExtra(MAX_COUNT, 1)
         activityGalleryBinding = ActivityGalleryBinding.inflate(layoutInflater)
-        setContentView(activityGalleryBinding.root)
         setupButton()
         setupAdapter()
         initPresenter()
-        activityGalleryBinding.btSubmit.setOnClickListener {
-            val data = Intent()
-            data.putStringArrayListExtra(RESULT, chosenImages)
-            setResult(Activity.RESULT_OK, data)
-            finish()
-        }
+        setContentView(activityGalleryBinding.root)
     }
 
     private fun setupTheme() {
@@ -75,6 +67,12 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
         val buttonStyle = intent.getIntExtra(SUBMIT_BUTTON_STYLE, -1)
         if (buttonStyle != -1) {
             activityGalleryBinding.btSubmit.style(buttonStyle)
+        }
+        activityGalleryBinding.btSubmit.setOnClickListener {
+            val data = Intent()
+            data.putStringArrayListExtra(RESULT, chosenImages)
+            setResult(Activity.RESULT_OK, data)
+            finish()
         }
     }
 
@@ -153,7 +151,7 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
                 } else {
                     Toast.makeText(
                         this,
-                        "You Cannot Select More Than $maxCount",
+                        getString(R.string.warning_max_count, maxCount),
                         Toast.LENGTH_SHORT
                     ).show()
                     return false
@@ -167,7 +165,8 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
     }
 
     private fun updateTitleBar() {
-        actionBar?.title = "${chosenImages.size}/$maxCount Selected"
+        val value = "${chosenImages.size}/$maxCount"
+        title = getString(R.string.chosen_image_counter, value)
     }
 
     private fun populateImages() {
