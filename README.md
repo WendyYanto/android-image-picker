@@ -1,8 +1,10 @@
+# Android Image Picker
+
 [![](https://jitpack.io/v/WendyYanto/android-image-picker.svg)](https://jitpack.io/#WendyYanto/android-image-picker)
 
 ![Demo](https://github.com/WendyYanto/android-image-picker/blob/master/images/sample.png)
 
-# Implementation Steps
+## Implementation Steps
 
 1. This library has already been included in jitpack.io. In order to use it, you should add it in your root build.gradle at the end of repositories:
 ```
@@ -34,5 +36,19 @@ override fun onCreate() {
     Injector.store(MediaDao::class.java, MediaDao(this))
 }
 ``` 
-P.S.
-Next release will add configurable style for button and checkbox in the gallery
+
+## Configuration
+Definition of Intent Extra's for GalleryActivity :
+1. MAX_COUNT: Maximum images user can select from gallery (default value: 1)
+2. SUBMIT_BUTTON_STYLE: Style attributes for submit button (default: android button style)
+3. THEME: Theme for GalleryActivity (default: your app theme)
+4. CATEGORY_DROPDOWN_ITEM_LAYOUT: Layout for your image category spinner item at the toolbar (default: android.R.layout.simple_spinner_dropdown_item)
+
+Example: 
+```
+val intent = Intent(this@MainActivity, GalleryActivity::class.java)
+intent.putExtra(GalleryActivity.MAX_COUNT, 10)
+intent.putExtra(GalleryActivity.SUBMIT_BUTTON_STYLE, R.style.MyButton)
+intent.putExtra(GalleryActivity.THEME, R.style.GalleryTheme)
+intent.putExtra(GalleryActivity.CATEGORY_DROPDOWN_ITEM_LAYOUT, R.layout.spinner_item)
+```
