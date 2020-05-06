@@ -34,12 +34,21 @@ dependencies {
 </application>
 ```
 4. Implement dependency injection of this plugin by initialize this code once. Usage of MediaDao is to fetch images using coroutines. It is recommended to add this code at `Application()`
-```
+```kotlin
+// Kotlin
 override fun onCreate() {
-    super.onCreate()
-    Injector.store(MediaDao::class.java, MediaDao(this))
+  super.onCreate()
+  Injector.store(MediaDao::class.java, MediaDao(this))
 }
 ``` 
+
+```java
+// Java
+@Override
+public void onCreate() {
+   Injector.INSTANCE.store(MediaDao.class, new MediaDao(this));
+}
+```
 
 ## Configuration
 Definition of Intent Extra's for GalleryActivity :
