@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import com.airbnb.paris.extensions.style
 import dev.wendyyanto.imagepicker.R
 import dev.wendyyanto.imagepicker.di.Injector
 import dev.wendyyanto.imagepicker.features.gallery.model.ImageGalleryUiModel
@@ -40,14 +41,19 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
     companion object {
         const val MAX_COUNT = "GALLERY_MAX_COUNT"
         const val RESULT = "GALLERY_RESULT"
+        const val SUBMIT_BUTTON_STYLE = "SUBMIT_BUTTON_STYLE"
+        const val THEME = "THEME"
+        const val CATEGORY_DROPDOWN_ITEM_LAYOUT = "CATEGORY_DROPDOWN_ITEM_LAYOUT"
         private const val READ_EXTERNAL_PERMISSION_REQUEST_CODE = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupTheme()
         maxCount = intent.getIntExtra(MAX_COUNT, 1)
         activityGalleryBinding = ActivityGalleryBinding.inflate(layoutInflater)
         setContentView(activityGalleryBinding.root)
+        setupButton()
         setupAdapter()
         initPresenter()
         activityGalleryBinding.btSubmit.setOnClickListener {
@@ -55,6 +61,20 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
             data.putStringArrayListExtra(RESULT, chosenImages)
             setResult(Activity.RESULT_OK, data)
             finish()
+        }
+    }
+
+    private fun setupTheme() {
+        val theme = intent.getIntExtra(THEME, -1)
+        if (theme != -1) {
+            setTheme(theme)
+        }
+    }
+
+    private fun setupButton() {
+        val buttonStyle = intent.getIntExtra(SUBMIT_BUTTON_STYLE, -1)
+        if (buttonStyle != -1) {
+            activityGalleryBinding.btSubmit.style(buttonStyle)
         }
     }
 
@@ -67,7 +87,9 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
     }
 
     private fun setupAdapter() {
-        val galleryAdapter = ImageGalleryAdapter(::updateChosenImages)
+        val galleryAdapter = ImageGalleryAdapter(
+            ::updateChosenImages
+        )
         this.adapter = galleryAdapter
         with(activityGalleryBinding.rvGridImage) {
             layoutManager = GridLayoutManager(this@GalleryActivity, 3)
@@ -84,14 +106,16 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
     private fun setupToolbarAdapter(menu: Menu?) {
         val spinnerMenuItem: MenuItem? = menu?.findItem(R.id.media_category_spinner)
         val spinner: Spinner = spinnerMenuItem?.actionView as Spinner
-
+        val layout = intent.getIntExtra(
+            CATEGORY_DROPDOWN_ITEM_LAYOUT,
+            android.R.layout.simple_spinner_dropdown_item
+        )
         val spinnerAdapter =
             ImageGalleryToolBarAdapter(
                 this,
-                android.R.layout.simple_spinner_dropdown_item,
+                layout,
                 categories
             )
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = spinnerAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {

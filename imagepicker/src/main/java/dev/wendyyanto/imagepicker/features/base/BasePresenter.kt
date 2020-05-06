@@ -1,5 +1,5 @@
 package dev.wendyyanto.imagepicker.features.base
 
-interface BasePresenter {
+internal interface BasePresenter {
     fun detach()
 }

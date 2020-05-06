@@ -1,6 +1,5 @@
 package dev.wendyyanto.imagepicker.features.gallery.adapter
 
-import android.util.Log
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +12,7 @@ import dev.wendyyanto.imagepicker.R
 import dev.wendyyanto.imagepicker.databinding.ItemImageBinding
 import dev.wendyyanto.imagepicker.features.gallery.model.ImageGalleryUiModel
 
-class ImageGalleryAdapter(
+internal class ImageGalleryAdapter(
     private val listener: (imageUri: String, createAction: Boolean) -> Boolean
 ) : ListAdapter<ImageGalleryUiModel, ImageGalleryAdapter.ImageGalleryViewHolder>(DIFF_UTIL) {
 

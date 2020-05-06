@@ -9,17 +9,6 @@ object Injector {
         return maps[T::class.java] as T
     }
 
-    inline fun <reified T> provide(): T {
-        try {
-            return T::class.java.newInstance()
-        } catch (e: Exception) {
-            throw IllegalStateException(
-                "Cannot provide instance of null parameters in Constructor",
-                e
-            )
-        }
-    }
-
     fun store(clazz: Class<*>, obj: Any) {
         maps[clazz] = obj
     }

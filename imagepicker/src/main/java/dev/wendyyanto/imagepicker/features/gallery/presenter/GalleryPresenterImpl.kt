@@ -5,7 +5,7 @@ import dev.wendyyanto.imagepicker.features.gallery.view.GalleryView
 import kotlinx.coroutines.*
 import kotlinx.coroutines.android.Main
 
-class GalleryPresenterImpl(private val view: GalleryView, private val mediaDao: MediaDao) :
+internal class GalleryPresenterImpl(private val view: GalleryView, private val mediaDao: MediaDao) :
     GalleryPresenter {
 
     private var job: Job? = null
