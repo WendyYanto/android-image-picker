@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.wendy.imagepickerdemo.R
 import com.wendy.imagepickerdemo.databinding.ActivityMainBinding
 import com.wendy.imagepickerdemo.main.features.result.ResultActivity
 import dev.wendyyanto.imagepicker.features.gallery.view.GalleryActivity
@@ -22,6 +23,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(activityBinding.root)
         activityBinding.btShowGallery.setOnClickListener {
             val intent = Intent(this, GalleryActivity::class.java)
+            intent.putExtra(GalleryActivity.SUBMIT_BUTTON_STYLE, R.style.MyButton)
+            intent.putExtra(GalleryActivity.THEME, R.style.GalleryTheme)
+            intent.putExtra(GalleryActivity.CATEGORY_DROPDOWN_ITEM_LAYOUT, R.layout.spinner_item)
             startActivityForResult(intent, GALLERY_REQUEST_CODE)
         }
     }

@@ -8,4 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="MyButton">
+        <item name="android:background">@color/darkRed</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <style name="GalleryTheme">
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorPrimaryDark">@color/darkRed</item>
+        <item name="colorAccent">@color/red</item>
+    </style>
 </resources>
