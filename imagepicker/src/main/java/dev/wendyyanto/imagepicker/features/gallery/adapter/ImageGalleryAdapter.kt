@@ -16,6 +16,8 @@ internal class ImageGalleryAdapter(
     private val listener: (imageUri: String, createAction: Boolean) -> Boolean
 ) : ListAdapter<ImageGalleryUiModel, ImageGalleryAdapter.ImageGalleryViewHolder>(DIFF_UTIL) {
 
+    private var isSingle = false
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageGalleryViewHolder {
         return ImageGalleryViewHolder(
             ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -25,6 +27,10 @@ internal class ImageGalleryAdapter(
     override fun onBindViewHolder(holder: ImageGalleryViewHolder, position: Int) {
         val imageGalleryViewHolder: ImageGalleryViewHolder = holder
         imageGalleryViewHolder.bind(getItem(position))
+    }
+
+    fun setSingle() {
+        isSingle = true
     }
 
     inner class ImageGalleryViewHolder(private val viewBinding: ItemImageBinding) :
@@ -42,6 +48,10 @@ internal class ImageGalleryAdapter(
                 it.setOnClickListener(this)
             }
             viewBinding.cbImageItem.let {
+                if (isSingle) {
+                    it.visibility = View.GONE
+                    return
+                }
                 if (imageGalleryUiModel.isChecked) {
                     it.isChecked = true
                     return

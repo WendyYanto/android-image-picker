@@ -33,7 +33,7 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
     private val chosenImages: ArrayList<String> = arrayListOf()
     private var images: MutableMap<String, List<ImageGalleryUiModel>> =
         mutableMapOf()
-    private var maxCount: Int? = null
+    private var maxCount = 1
     private var categoryIndex = 0
 
     companion object {
@@ -69,11 +69,15 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
             activityGalleryBinding.btSubmit.style(buttonStyle)
         }
         activityGalleryBinding.btSubmit.setOnClickListener {
-            val data = Intent()
-            data.putStringArrayListExtra(RESULT, chosenImages)
-            setResult(Activity.RESULT_OK, data)
-            finish()
+            sendResultAndFinish()
         }
+    }
+
+    private fun sendResultAndFinish() {
+        val data = Intent()
+        data.putStringArrayListExtra(RESULT, chosenImages)
+        setResult(Activity.RESULT_OK, data)
+        finish()
     }
 
     private fun initPresenter() {
@@ -92,6 +96,9 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
         with(activityGalleryBinding.rvGridImage) {
             layoutManager = GridLayoutManager(this@GalleryActivity, 3)
             adapter = galleryAdapter
+        }
+        if (maxCount == 1) {
+            adapter.setSingle()
         }
     }
 
@@ -138,29 +145,33 @@ class GalleryActivity : AppCompatActivity(), GalleryView {
         super.onResume()
         if (isStoragePermissionAllowed()) {
             chosenImages.clear()
-            updateTitleBar()
+            if (maxCount > 1) {
+                updateTitleBar()
+            }
             galleryPresenter.fetchImages()
         }
     }
 
     private fun updateChosenImages(imageUri: String, createAction: Boolean): Boolean {
         if (createAction) {
-            maxCount?.let {
-                if (chosenImages.size < it) {
-                    chosenImages.add(imageUri)
-                } else {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.warning_max_count, maxCount),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return false
-                }
+            if (chosenImages.size < maxCount) {
+                chosenImages.add(imageUri)
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.warning_max_count, maxCount),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return false
             }
         } else {
             chosenImages.remove(imageUri)
         }
-        updateTitleBar()
+        if (chosenImages.size == maxCount && maxCount == 1) {
+            sendResultAndFinish()
+        } else {
+            updateTitleBar()
+        }
         return true
     }
 
