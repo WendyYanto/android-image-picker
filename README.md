@@ -33,7 +33,7 @@ dependencies {
   <activity android:name="dev.wendyyanto.imagepicker.features.gallery.view.GalleryActivity" />
 </application>
 ```
-4. Implement dependency injection of this plugin by initialize this code once. Usage of MediaDao is to fetch images using coroutines. It is recommended to add this code at `Application()`
+4. Implement dependency injection of this plugin by initialize this code once. Usage of MediaDao is to fetch images using coroutines. It is recommended to add this code when in the UI that require `GalleryActivity`
 ```kotlin
 // Kotlin
 override fun onCreate() {
